@@ -79,4 +79,17 @@ class TodoController extends Controller
 
         return response('All items successfully deleted.', 200);
     }
+
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function get(Request $request): Response
+    {
+        $items = TodoItem::all();
+
+        return response($items, 200);
+    }
 }
