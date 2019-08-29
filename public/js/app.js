@@ -235,7 +235,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       'loading': false
     };
   },
-  mounted: function mounted() {
+  created: function created() {
     var _this = this;
 
     if (this.historyCount < 1) {
@@ -468,7 +468,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     TodoItem: _TodoList_TodoItem__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  mounted: function mounted() {
+  created: function created() {
     this.getItems();
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['getItems'])),

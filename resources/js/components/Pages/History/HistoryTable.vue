@@ -18,7 +18,7 @@
                 'loading': false,
             };
         },
-        mounted() {
+        created() {
             if ( this.historyCount < 1 ) {
                 this.loading = true;
                 this.getHistory()

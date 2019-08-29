@@ -13,7 +13,7 @@
     export default {
         name: "TodoList",
         components: {TodoItem},
-        mounted() {
+        created() {
             this.getItems();
         },
         methods: {
