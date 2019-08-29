@@ -5,8 +5,8 @@ export default {
     ADD_ITEM( state, item ) {
         state.items.push({
             id     : item.id,
-            message: item.message,
-            status : item.status
+            content: item.content,
+            completed_at: "",
         });
     },
     REMOVE_ITEM( state, index ) {
@@ -16,7 +16,7 @@ export default {
         state.items.splice(index, 1, item);
     },
     CLEAR_ITEMS(state) {
-        state.items.length = 0;
+        state.items = [];
     },
     LOAD_ITEMS(state, items) {
         state.items = items;

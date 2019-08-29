@@ -7344,8 +7344,8 @@ __webpack_require__.r(__webpack_exports__);
   ADD_ITEM: function ADD_ITEM(state, item) {
     state.items.push({
       id: item.id,
-      message: item.message,
-      status: item.status
+      content: item.content,
+      completed_at: ""
     });
   },
   REMOVE_ITEM: function REMOVE_ITEM(state, index) {
@@ -7355,7 +7355,7 @@ __webpack_require__.r(__webpack_exports__);
     state.items.splice(index, 1, item);
   },
   CLEAR_ITEMS: function CLEAR_ITEMS(state) {
-    state.items.length = 0;
+    state.items = [];
   },
   LOAD_ITEMS: function LOAD_ITEMS(state, items) {
     state.items = items;
