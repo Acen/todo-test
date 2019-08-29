@@ -504,6 +504,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "TodoItem",
@@ -519,15 +522,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   methods: _objectSpread({
-    onClick: function onClick() {
+    onComplete: function onComplete() {
       var _this = this;
 
       this.loading = true;
       this.completeItem(this.item.id).then(function () {
         _this.loading = false;
       });
+    },
+    onDelete: function onDelete() {
+      var _this2 = this;
+
+      this.loading = true;
+      this.deleteItem(this.item.id).then(function () {
+        _this2.loading = false;
+      });
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['completeItem'])),
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['completeItem', 'deleteItem'])),
   computed: {
     completed: function completed() {
       return this.item && this.item.completed_at;
@@ -6023,7 +6034,7 @@ var render = function() {
                   expression: "loading"
                 }
               ],
-              on: { click: _vm.onClick }
+              on: { click: _vm.onComplete }
             },
             [_vm._v("Donezo??")]
           )
@@ -6033,8 +6044,32 @@ var render = function() {
       _vm._v(" "),
       _c(
         "el-col",
-        { class: { "probably-green": _vm.completed }, attrs: { span: 12 } },
+        { class: { "probably-green": _vm.completed }, attrs: { span: 16 } },
         [_c("p", [_vm._v(_vm._s(_vm.item.content))])]
+      ),
+      _vm._v(" "),
+      _c(
+        "el-col",
+        { attrs: { span: 4 } },
+        [
+          _c(
+            "el-button",
+            {
+              directives: [
+                {
+                  name: "loading",
+                  rawName: "v-loading",
+                  value: _vm.loading,
+                  expression: "loading"
+                }
+              ],
+              attrs: { type: "danger" },
+              on: { click: _vm.onDelete }
+            },
+            [_vm._v("Kiiiilll meeee")]
+          )
+        ],
+        1
       )
     ],
     1
