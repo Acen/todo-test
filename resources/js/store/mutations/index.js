@@ -18,6 +18,9 @@ export default {
     CLEAR_ITEMS(state) {
         state.items.length = 0;
     },
+    LOAD_ITEMS(state, items) {
+        state.items = items;
+    },
     ADD_HISTORY( state, history ) {
         state.history.push({history});
     },

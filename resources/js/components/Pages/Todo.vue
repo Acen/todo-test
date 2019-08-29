@@ -6,8 +6,7 @@
         <el-main>
             <el-row>
                 <todo-info></todo-info>
-                <todo-buttons
-                @addItem="addNewItem"></todo-buttons>
+                <todo-buttons @add-item="onAddItem" @clear-list="onClearList"></todo-buttons>
             </el-row>
             <el-row>
                 <el-col :span="24">
@@ -20,15 +19,11 @@
                 </el-col>
             </el-row>
         </el-main>
-        <el-dialog
-                :visible.sync="dialog"
-                :destroy-on-close="true"
-                :item.sync="itemData"
-                title="Add New Item">
-            <todo-new></todo-new>
+        <el-dialog :visible.sync="dialog" :destroy-on-close="true" title="Add New Item">
+            <todo-new @sync-content="onSyncContent"></todo-new>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialog = false">Cancel</el-button>
-                <el-button type="primary" @click="storeItem">Confirm</el-button>
+                <el-button type="primary" @click="onSubmitItem">Confirm</el-button>
             </span>
         </el-dialog>
     </el-container>
@@ -39,22 +34,43 @@
     import TodoInfo from "./Todo/TodoInfo";
     import TodoList from "./Todo/TodoList";
     import TodoNew from "./Todo/TodoNew";
-    import {mapActions} from 'vuex';
+    import { mapActions } from 'vuex';
 
     export default {
-        name: "Todo",
+        name      : "Todo",
         components: {TodoNew, TodoList, TodoInfo, TodoButtons},
         data() {
             return {
-                'dialog': false,
-                'itemData': {content: ""}
-            }
+                'dialog' : false,
+                'newItem': {content: ""},
+                loading  : false,
+            };
         },
-        methods: {
-            addNewItem() {
+        methods   : {
+            onSyncContent( text ) {
+                this.newItem.content = text;
+            },
+            onAddItem() {
                 this.dialog = true;
             },
+            onSubmitItem() {
+                this.loading = true;
+                this.storeItem(this.newItem).then(() => {
+                    this.loading = false;
+                }).catch(() => {
+                    this.$message('There has been an issue. Something something blah.')
+                });
+                this.dialog = false;
+                this.newItem = {content: ""};
+            },
+            onClearList() {
+                this.loading = true;
+                this.clearItems().then(() => {
+                    this.loading = false;
+                });
+            },
             ...mapActions([
+                'clearItems',
                 'storeItem'
             ]),
 

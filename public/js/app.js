@@ -221,6 +221,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "HistoryTable",
@@ -296,11 +301,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 
@@ -317,16 +317,42 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       'dialog': false,
-      'itemData': {
+      'newItem': {
         content: ""
-      }
+      },
+      loading: false
     };
   },
   methods: _objectSpread({
-    addNewItem: function addNewItem() {
+    onSyncContent: function onSyncContent(text) {
+      this.newItem.content = text;
+    },
+    onAddItem: function onAddItem() {
       this.dialog = true;
+    },
+    onSubmitItem: function onSubmitItem() {
+      var _this = this;
+
+      this.loading = true;
+      this.storeItem(this.newItem).then(function () {
+        _this.loading = false;
+      })["catch"](function () {
+        _this.$message('There has been an issue. Something something blah.');
+      });
+      this.dialog = false;
+      this.newItem = {
+        content: ""
+      };
+    },
+    onClearList: function onClearList() {
+      var _this2 = this;
+
+      this.loading = true;
+      this.clearItems().then(function () {
+        _this2.loading = false;
+      });
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapActions"])(['storeItem']))
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapActions"])(['clearItems', 'storeItem']))
 });
 
 /***/ }),
@@ -349,14 +375,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "TodoButtons",
+  data: function data() {
+    return {
+      dialog: false
+    };
+  },
   methods: {
     addItem: function addItem() {
-      this.$emit('addItem');
+      this.$emit('add-item');
     },
-    clearList: function clearList() {
-      this.$emit('clearList');
+    checkClearList: function checkClearList() {
+      this.dialog = true;
+    },
+    onClearList: function onClearList() {
+      this.dialog = false;
+      this.$emit('clear-list');
     }
   }
 });
@@ -403,13 +444,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
 //
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "TodoList",
-  computed: {}
+  mounted: function mounted() {
+    this.getItems();
+  },
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['getItems'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['todos']))
 });
 
 /***/ }),
@@ -433,8 +490,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "TodoNew",
-  props: {
-    item: ""
+  methods: {
+    onChange: function onChange() {
+      this.$emit('sync-content', this.form.content);
+    }
   },
   data: function data() {
     return {
@@ -5516,7 +5575,24 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("el-table", { attrs: { loading: _vm.loading, data: _vm.history } })
+  return _c(
+    "el-table",
+    { attrs: { loading: _vm.loading, data: _vm.history } },
+    [
+      _c("el-table-column", { attrs: { prop: "id", label: "ID" } }),
+      _vm._v(" "),
+      _c("el-table-column", { attrs: { prop: "content", label: "Content" } }),
+      _vm._v(" "),
+      _c("el-table-column", {
+        attrs: { prop: "deleted_at", label: "Deleted At" }
+      }),
+      _vm._v(" "),
+      _c("el-table-column", {
+        attrs: { prop: "updated_at", label: "Updated At" }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -5553,7 +5629,9 @@ var render = function() {
             [
               _c("todo-info"),
               _vm._v(" "),
-              _c("todo-buttons", { on: { addItem: _vm.addNewItem } })
+              _c("todo-buttons", {
+                on: { "add-item": _vm.onAddItem, "clear-list": _vm.onClearList }
+              })
             ],
             1
           ),
@@ -5579,20 +5657,16 @@ var render = function() {
           attrs: {
             visible: _vm.dialog,
             "destroy-on-close": true,
-            item: _vm.itemData,
             title: "Add New Item"
           },
           on: {
             "update:visible": function($event) {
               _vm.dialog = $event
-            },
-            "update:item": function($event) {
-              _vm.itemData = $event
             }
           }
         },
         [
-          _c("todo-new"),
+          _c("todo-new", { on: { "sync-content": _vm.onSyncContent } }),
           _vm._v(" "),
           _c(
             "span",
@@ -5616,7 +5690,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-button",
-                { attrs: { type: "primary" }, on: { click: _vm.storeItem } },
+                { attrs: { type: "primary" }, on: { click: _vm.onSubmitItem } },
                 [_vm._v("Confirm")]
               )
             ],
@@ -5666,11 +5740,56 @@ var render = function() {
           _vm._v(" "),
           _c(
             "el-button",
-            { attrs: { type: "danger" }, on: { click: _vm.clearList } },
+            { attrs: { type: "danger" }, on: { click: _vm.checkClearList } },
             [_vm._v("Clear the List")]
           )
         ],
         1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            visible: _vm.dialog,
+            title: "Are you sure you want to clear the Todo List?"
+          },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialog = $event
+            }
+          }
+        },
+        [
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialog = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                { attrs: { type: "danger" }, on: { click: _vm.onClearList } },
+                [_vm._v("Clear List")]
+              )
+            ],
+            1
+          )
+        ]
       )
     ],
     1
@@ -5735,7 +5854,15 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "div",
+    [
+      _vm._l(_vm.todos, function(todo) {
+        return [_c("p", [_vm._v(_vm._s(todo))])]
+      })
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -5767,6 +5894,7 @@ var render = function() {
         "el-form-item",
         [
           _c("el-input", {
+            on: { change: _vm.onChange },
             model: {
               value: _vm.form.content,
               callback: function($$v) {
@@ -5931,26 +6059,78 @@ module.exports = g;
 /*!*****************************!*\
   !*** ./resources/js/api.js ***!
   \*****************************/
-/*! exports provided: historyFetch, store */
+/*! exports provided: History, Items */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "historyFetch", function() { return historyFetch; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "store", function() { return store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "History", function() { return History; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Items", function() { return Items; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 /**
  * Submits our HTTP requests do send/receive things on the server side.
  */
 
-var historyFetch = function historyFetch() {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('allhistory');
-};
-var store = function store(data) {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('todo', data);
-};
+var History =
+/*#__PURE__*/
+function () {
+  function History() {
+    _classCallCheck(this, History);
+  }
+
+  _createClass(History, null, [{
+    key: "get",
+    value: function get() {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('allhistory');
+    }
+  }]);
+
+  return History;
+}();
+var Items =
+/*#__PURE__*/
+function () {
+  function Items() {
+    _classCallCheck(this, Items);
+  }
+
+  _createClass(Items, null, [{
+    key: "get",
+    value: function get() {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('todo');
+    }
+  }, {
+    key: "create",
+    value: function create(data) {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('todo', data);
+    }
+  }, {
+    key: "edit",
+    value: function edit(item_id, data) {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default.a.patch('todo/' + item_id, data);
+    }
+  }, {
+    key: "delete",
+    value: function _delete(item_id) {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('todo/' + item_id);
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('todo');
+    }
+  }]);
+
+  return Items;
+}();
 
 /***/ }),
 
@@ -6856,13 +7036,17 @@ __webpack_require__.r(__webpack_exports__);
 /*!*********************************************!*\
   !*** ./resources/js/store/actions/index.js ***!
   \*********************************************/
-/*! exports provided: getHistory, storeItem */
+/*! exports provided: getHistory, storeItem, deleteItem, editItem, clearItems, getItems */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHistory", function() { return getHistory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeItem", function() { return storeItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteItem", function() { return deleteItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "editItem", function() { return editItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clearItems", function() { return clearItems; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getItems", function() { return getItems; });
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
 
 /**
@@ -6872,15 +7056,44 @@ __webpack_require__.r(__webpack_exports__);
 
 function getHistory(_ref) {
   var commit = _ref.commit;
-  return _api__WEBPACK_IMPORTED_MODULE_0__["historyFetch"].then(function (data) {
-    commit('LOAD_HISTORY', data);
+  return _api__WEBPACK_IMPORTED_MODULE_0__["History"].get().then(function (response) {
+    commit('LOAD_HISTORY', response.data);
   });
 }
 function storeItem(_ref2, data) {
   var commit = _ref2.commit;
-  console.log('action, storeItem');
-  return Object(_api__WEBPACK_IMPORTED_MODULE_0__["store"])(data).then(function (item) {
-    commit('ADD_ITEM', item);
+  return _api__WEBPACK_IMPORTED_MODULE_0__["Items"].create(data).then(function (response) {
+    commit('ADD_ITEM', response.data);
+  });
+} // @todo check for race conditions.
+
+function deleteItem(_ref3, index) {
+  var commit = _ref3.commit,
+      state = _ref3.state;
+  var id = state.items[index].id;
+  return _api__WEBPACK_IMPORTED_MODULE_0__["Items"]["delete"](id).then(function () {
+    commit('REMOVE_ITEM', index);
+  });
+} // @todo check for race conditions
+
+function editItem(_ref4, index, item) {
+  var commit = _ref4.commit,
+      state = _ref4.state;
+  var id = state.items[index].id;
+  return _api__WEBPACK_IMPORTED_MODULE_0__["Items"].edit(id, data).then(function (response) {
+    commit('MODIFY_ITEM', index, response.data);
+  });
+}
+function clearItems(_ref5) {
+  var commit = _ref5.commit;
+  return _api__WEBPACK_IMPORTED_MODULE_0__["Items"].clear().then(function () {
+    commit('CLEAR_ITEMS');
+  });
+}
+function getItems(_ref6) {
+  var commit = _ref6.commit;
+  return _api__WEBPACK_IMPORTED_MODULE_0__["Items"].get().then(function (response) {
+    commit('LOAD_ITEMS', response.data);
   });
 }
 
@@ -6896,6 +7109,9 @@ function storeItem(_ref2, data) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
+  todos: function todos(state) {
+    return state.items;
+  },
   completedTodo: function completedTodo(state) {
     return state.items.filter(function (item) {
       return item.done;
@@ -6944,7 +7160,8 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var state = {
-  items: []
+  items: [],
+  history: []
 };
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: state,
@@ -6983,6 +7200,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   CLEAR_ITEMS: function CLEAR_ITEMS(state) {
     state.items.length = 0;
+  },
+  LOAD_ITEMS: function LOAD_ITEMS(state, items) {
+    state.items = items;
   },
   ADD_HISTORY: function ADD_HISTORY(state, history) {
     state.history.push({

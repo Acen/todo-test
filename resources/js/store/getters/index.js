@@ -1,4 +1,7 @@
 export default{
+    todos(state) {
+        return state.items;
+    },
     completedTodo(state) {
         return state.items.filter(item => item.done);
     },
