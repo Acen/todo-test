@@ -9,6 +9,9 @@
 <script>
     export default {
         name: "TodoNew",
+        props: {
+            item: ""
+        },
         data() {
             return {
                 form: {

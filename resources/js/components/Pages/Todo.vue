@@ -23,11 +23,12 @@
         <el-dialog
                 :visible.sync="dialog"
                 :destroy-on-close="true"
+                :item.sync="itemData"
                 title="Add New Item">
             <todo-new></todo-new>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialog = false">Cancel</el-button>
-                <el-button type="primary" @click="storeItem(">Confirm</el-button>
+                <el-button type="primary" @click="storeItem">Confirm</el-button>
             </span>
         </el-dialog>
     </el-container>
@@ -46,6 +47,7 @@
         data() {
             return {
                 'dialog': false,
+                'itemData': {content: ""}
             }
         },
         methods: {

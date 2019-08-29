@@ -10,5 +10,11 @@ export default{
     },
     uncompletedTodoCount(state, getters) {
         return getters.uncompletedTodo.length;
+    },
+    history(state) {
+        return state.history;
+    },
+    historyCount(state, getters) {
+        return getters.history.length;
     }
 }

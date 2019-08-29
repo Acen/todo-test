@@ -300,6 +300,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 
@@ -315,7 +316,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      'dialog': false
+      'dialog': false,
+      'itemData': {
+        content: ""
+      }
     };
   },
   methods: _objectSpread({
@@ -429,6 +433,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "TodoNew",
+  props: {
+    item: ""
+  },
   data: function data() {
     return {
       form: {
@@ -5529,8 +5536,101 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {}
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-container",
+    [
+      _c("el-header", [_c("h2", [_vm._v("Do you want do.. a thing?")])]),
+      _vm._v(" "),
+      _c(
+        "el-main",
+        [
+          _c(
+            "el-row",
+            [
+              _c("todo-info"),
+              _vm._v(" "),
+              _c("todo-buttons", { on: { addItem: _vm.addNewItem } })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-row",
+            [_c("el-col", { attrs: { span: 24 } }, [_c("el-divider")], 1)],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-row",
+            [_c("el-col", { attrs: { span: 24 } }, [_c("todo-list")], 1)],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            visible: _vm.dialog,
+            "destroy-on-close": true,
+            item: _vm.itemData,
+            title: "Add New Item"
+          },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialog = $event
+            },
+            "update:item": function($event) {
+              _vm.itemData = $event
+            }
+          }
+        },
+        [
+          _c("todo-new"),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialog = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                { attrs: { type: "primary" }, on: { click: _vm.storeItem } },
+                [_vm._v("Confirm")]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
 var staticRenderFns = []
+render._withStripped = true
 
 
 
@@ -6778,6 +6878,7 @@ function getHistory(_ref) {
 }
 function storeItem(_ref2, data) {
   var commit = _ref2.commit;
+  console.log('action, storeItem');
   return Object(_api__WEBPACK_IMPORTED_MODULE_0__["store"])(data).then(function (item) {
     commit('ADD_ITEM', item);
   });
@@ -6810,6 +6911,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   uncompletedTodoCount: function uncompletedTodoCount(state, getters) {
     return getters.uncompletedTodo.length;
+  },
+  history: function history(state) {
+    return state.history;
+  },
+  historyCount: function historyCount(state, getters) {
+    return getters.history.length;
   }
 });
 
