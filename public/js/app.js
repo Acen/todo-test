@@ -7436,7 +7436,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   completedTodo: function completedTodo(state) {
     return state.items.filter(function (item) {
-      return item.done;
+      return item.completed_at;
     });
   },
   completedTodoCount: function completedTodoCount(state, getters) {
@@ -7444,7 +7444,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   uncompletedTodo: function uncompletedTodo(state) {
     return state.items.filter(function (item) {
-      return !item.done;
+      return !item.completed_at;
     });
   },
   uncompletedTodoCount: function uncompletedTodoCount(state, getters) {
