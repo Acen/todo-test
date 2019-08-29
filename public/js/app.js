@@ -226,6 +226,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "HistoryTable",
@@ -5582,6 +5583,10 @@ var render = function() {
       _c("el-table-column", { attrs: { prop: "id", label: "ID" } }),
       _vm._v(" "),
       _c("el-table-column", { attrs: { prop: "content", label: "Content" } }),
+      _vm._v(" "),
+      _c("el-table-column", {
+        attrs: { prop: "completed_at", label: "Completed At" }
+      }),
       _vm._v(" "),
       _c("el-table-column", {
         attrs: { prop: "deleted_at", label: "Deleted At" }
