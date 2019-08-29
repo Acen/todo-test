@@ -24,5 +24,7 @@ export class Items{
     static clear(){
         return axios.delete('todo');
     }
-
+    static complete(item_id){
+        return axios.post('todo/' + item_id);
+    }
 }

@@ -102,7 +102,11 @@ class TodoController extends Controller
      */
     public function complete(Request $request, TodoItem $item): Response
     {
-        $item->completed_at = now();
+        if($item->completed_at){
+            $item->completed_at = null;
+        }else {
+            $item->completed_at = now();
+        }
         $item->save();
 
         return response($item, 200);
