@@ -17,7 +17,7 @@ class CreateTodoItemsTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->softDeletes();
-            $table->timestamp('completed_on')->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->text('content');
         });
     }

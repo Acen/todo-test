@@ -92,4 +92,19 @@ class TodoController extends Controller
 
         return response($items, 200);
     }
+
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\TodoItem $item
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function complete(Request $request, TodoItem $item): Response
+    {
+        $item->completed_at = now();
+        $item->save();
+
+        return response($item, 200);
+    }
 }
